@@ -1,0 +1,202 @@
+/*****************************************************/
+/*** custom variables ***/
+/*****************************************************/
+
+
+
+/*******************************************************************/
+/*** FONTS ***/
+/*******************************************************************/
+// english fonts
+@ltrBodyFonts: 		'open-sans';	
+@ltrHeadFonts:      'open-san'; 			
+// rtl fonts
+@rtlBodyFonts: 		'JF Flat Regular';
+@rtlHeadFonts: 		'JF Flat Regular';
+
+// icon font
+
+@iconFont: 			"FontAwesome";
+@rtlBodyFontFamily: @rtlBodyFonts;
+@rtlHeadFontFamily: @rtlHeadFonts;
+
+@ltrBodyFontFamily: @ltrBodyFonts;
+@ltrHeadFontFamily: @ltrHeadFonts;
+
+
+
+
+/*******************************************************************/
+/*** FONTS SETTING ***/
+/*******************************************************************/
+@smallSize: 		12px;
+@normalSize: 		14px;
+@normalSize2:       16px;
+@mediumSize: 		18px;
+@largeSize: 		21px;
+@xLargeSize: 		24px;
+@xxLargeSize: 		30px;
+@xxxLargeSize: 		36px;
+@lineHeight: 		1.4285; // for body size 13px lineheight will be 20px;
+
+@bodySize: 			@normalSize;
+@metaSize: 			@smallSize;
+@headSix: 			@smallSize;
+@headFive: 			@normalSize;
+@headFour: 			@mediumSize;
+@headThree: 		@largeSize;
+@headTwo: 			@xLargeSize;
+@headOne: 			@xxLargeSize;
+@superHead: 		@xxxLargeSize + 12px;
+@xSuperHead: 		@superHead + 18px;
+
+@headerIconSize: 	@largeSize;
+@headerLinkSize: 	@normalSize;
+
+
+
+
+/*******************************************************************/
+/*** COLOR SCHEME ***/
+/*******************************************************************/
+// islamhouse defult color scheme
+
+
+// blues
+@blue: 				#7386aa;
+@blueDark: 			#172b5e;
+@blueDarkD:         #1f3772;
+@blueDarkDD:        #112046;
+@blueDarkDDD:       #0c1838;
+@blueF:             #567bf5;
+@blueFF:            #2b56bb;
+@blueH:             #3b6fe8;
+
+
+// beige
+// @beige: 			;
+
+// green
+@green: 			#1e5b56;
+@greenDark: 		#0b4e49;
+@greenLight: 		#2f6b66;
+
+// orange
+@orange: 			#da7e1b;
+
+// red
+@red: 				#971b1b;
+
+
+// grayscal
+@black: 			#000;
+@grayDark: 			#999999;
+@gray: 				#dddddd;
+@grayLight: 		#f9f9f9;
+@grayDD:            #e9f1f3;
+@white: 			#ffffff;
+
+
+// social colors
+@facebookBlue: 		#3b5998;
+@googleOrange: 		#dd4b39;
+@twitterBlue: 		#56a3d9;
+@youtubeRed: 		#bf221f;
+@linkedIn:          #1e88c9;
+@inverse:           #5f6465;
+
+
+
+
+
+@blackShadowColor: 	rgba(0, 0, 0, .1);
+@whiteShadowColor: 	rgba(255, 255, 255, .5);
+
+
+
+@bodyBgColor: 		@white;
+@bodyTxtColor: 		@blueDark;
+@headerBgColor: 	@greenDark;
+@headingColor:      @blueH;
+@headerLinkColor: 	@blueF;
+@btnBg:             @blueH;
+@headerLinkHover: 	@red;
+@footerBgColor: 	@grayLight;
+@footerTxtColor: 	@grayDark;
+@footerLinkColor: 	@grayDark;
+
+@primaryTxtColor: 	darken(@blue, 50%);
+@successTxtColor: 	darken(@green, 50%);
+@infoTxtColor: 		@blueDark;
+@infoAltTxtColor: 	@blueDark;
+@warningTxtColor: 	darken(@orange, 50%);
+@dangerTxtColor: 	dakken(@red, 50%);
+@defaultTxtColor:  	@grayDark;
+@defaultAltTxtColor: @grayDark;
+@inverseTxtColor: 	@black;
+@whiteTxtColor: 	@grayDark;
+
+
+@primaryColor: 		@blue;
+@successColor: 		@green;
+@infoColor: 		@blue;
+@infoAltColor: 		@green;
+@warningColor: 		@orange;
+@dangerColor: 		@red;
+@defaultColor: 		@gray;
+@defaultAltColor: 	darken(@grayLight, 5%);
+@whiteColor: 		@white;
+@inverseColor: 		@black;
+
+@primaryBorderColor: 		darken(@blue, 10%);
+@successBorderColor: 		darken(@green, 10%);
+@infoBorderColor: 	 		darken(@blue, 10%);
+@infoAltBorderColor: 		darken(@green, 10%);
+@warningBorderColor: 		darken(@orange, 10%);
+@dangerBorderColor: 		darken(@red, 10%);
+@whiteBorderColor: 			@white;
+@defaultBorderColor: 		darken(@grayLight, 10%);
+@defaultAltBorderColor: 	darken(@grayLight, 10%);
+
+@headerLogoImage: 	url(../images/logo.png);
+
+
+
+
+
+/*******************************************************************/
+/*** bootstrap responsive variables ***/
+/*******************************************************************/
+// Extra small screen / phone
+// Note: Deprecated @screen-xs and @screen-phone as of v3.0.1
+@screen-xs:                  480px;
+@screen-xs-min:              @screen-xs;
+@screen-phone:               @screen-xs-min;
+
+// Small screen / tablet
+// Note: Deprecated @screen-sm and @screen-tablet as of v3.0.1
+@screen-sm:                  768px;
+@screen-sm-min:              @screen-sm;
+@screen-tablet:              @screen-sm-min;
+
+// Medium screen / desktop
+// Note: Deprecated @screen-md and @screen-desktop as of v3.0.1
+@screen-md:                  992px;
+@screen-md-min:              @screen-md;
+@screen-desktop:             @screen-md-min;
+
+// Large screen / wide desktop
+// Note: Deprecated @screen-lg and @screen-lg-desktop as of v3.0.1
+@screen-lg:                  1200px;
+@screen-lg-min:              @screen-lg;
+@screen-lg-desktop:          @screen-lg-min;
+
+// So media queries don't overlap when required, provide a maximum
+
+@screen-xs-max:              (@screen-sm-min - 1);
+@screen-sm-max:              (@screen-md-min - 1);
+@screen-md-max:              (@screen-lg-min - 1);
+
+
+
+

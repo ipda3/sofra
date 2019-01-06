@@ -1,0 +1,88 @@
+.top-header{
+    background: url(../../assets/images/header-bg.png) no-repeat;
+    background-size: cover;
+    padding: 20px 0;
+    border-top: 5px solid #acacac;
+    min-height: 150px;
+    .social-info{
+        text-align: left;
+        margin-bottom: 30px;
+        a{
+            img{
+                width: 25px;
+                height: 25px;
+            }
+        }
+        label{
+            display: inline-block;
+            margin: 0 10px;
+            font-size: @normalSize2;
+            .normal-weight;
+            color: #adadad;
+            font-family: "Arial";
+            i{
+                margin: 0 5px;
+            }
+        }
+    }
+    .logo{
+        float: right;
+        .navbar-brand{
+            height: auto;
+            .no-padding;
+            margin-top: -50px;
+        }
+    }
+    .search{
+        float: left;
+        margin-top: 10px;
+        .form-group{
+            position: relative;
+            .no-margin;
+            .form-control{
+                width: 350px;
+                height: 40px;
+                .bg-white;
+                .no-border;
+                .no-radius;
+            }
+            .btn{
+                background: transparent;
+                position: absolute;
+                top: 0;
+                left: 0;
+                border: 0;
+                .no-radius;
+                border-right: 1px solid #ccc;
+                width: 50px;
+                height: 100%;
+                font-size: @mediumSize;
+                color: #3469a8;
+                outline: none;
+            }
+        }
+    }
+}
+.navbar.navbar-default.main-nav{
+    background: #971b1b;
+    .nav.navbar-nav{
+        li{
+            a{
+                color: @white;
+                font-size: @mediumSize;
+                padding: 15px 40px;
+                display: block;
+                border-left: 1px solid #aa2828;
+                &.active{
+                    background: #7c1919;
+                    .no-border;
+                }
+            }
+            &:last-child{
+                a{
+                    border: 0;
+                }
+            }
+        }
+    }
+}

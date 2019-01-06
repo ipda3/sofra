@@ -1,0 +1,259 @@
+/*********************************************************************/
+/*** the mixins for all browsers prefixes an complex code to reuse ***/
+/********************************************************************/
+
+
+// makes shadow cross-browser
+.box-shadow (@shadow: 0px 1px 1px 1px rgba(0, 0, 0, .3)){
+	-webkit-box-shadow: 	@shadow;
+	-moz-box-shadow: 		@shadow;
+	-ms-box-shadow: 		@shadow;
+	-o-box-shadow: 			@shadow;
+	box-shadow: 			@shadow;
+}
+.box-multi-shadow (@shadow1: 0px 1px 1px 1px rgba(0, 0, 0, .3), @shadow2: 0px 1px 1px 1px rgba(0, 0, 0, .3)){
+	-webkit-box-shadow: 	@shadow1, @shadow2;
+	-moz-box-shadow: 		@shadow1, @shadow2;
+	-ms-box-shadow: 		@shadow1, @shadow2;
+	-o-box-shadow: 			@shadow1, @shadow2;
+	box-shadow: 			@shadow1, @shadow2;
+}
+.text-shadow (@shadow: 0px 1px 1px 1px rgba(0, 0, 0, .3)){
+	-webkit-text-shadow: 	@shadow;
+	-moz-text-shadow: 		@shadow;
+	-ms-text-shadow: 		@shadow;
+	-o-text-shadow: 		@shadow;
+	text-shadow: 			@shadow
+}
+.text-multi-shadow (@shadow1: 1px 1px 1px rgba(0, 0, 0, .3), @shadow2: 1px 1px 1px rgba(0, 0, 0, .3)){
+	-webkit-text-shadow: 	@shadow1, @shadow2;
+	-moz-text-shadow: 		@shadow1, @shadow2;
+	-ms-text-shadow: 		@shadow1, @shadow2;
+	-o-text-shadow: 		@shadow1, @shadow2;
+	text-shadow: 			@shadow1, @shadow2;
+}
+
+// makes the transition cross-browser
+.transition (@property: all, @duration: 0.3s, @ease: ease-in-out){
+	-webkit-transition: 	@property @duration @ease;
+	-moz-transition: 		@property @duration @ease;
+	-ms-transition: 		@property @duration @ease;
+	-o-transition: 			@property @duration @ease;
+	transition: 			@property @duration @ease;
+}
+
+// transition of transform
+.transitionTransform (@transform: transform, @webkitTransform: -webkit-transform, @duration: .4s){
+	-webkit-transition: 	@webkitTransform @duration;
+	-moz-transition: 		@transform @duration;
+	-ms-transition: 		@transform @duration;
+	-o-transition: 			@transform @duration;
+	transition: 			@transform @duration;
+}
+
+// makes padding calculated within the whole width
+.box-sizing (@type: border-box) {
+	-webkit-box-sizing: 	@type;
+	-moz-box-sizing:    	@type;
+	box-sizing:         	@type;
+}
+
+
+// makes border radius cross-browser
+.border-radius (@radius: 5px) {
+	-webkit-border-radius: 	@radius;
+	-moz-border-radius:    	@radius;
+	border-radius:         	@radius;
+
+	-moz-background-clip:   padding-box;
+	-webkit-background-clip:padding-box;
+	background-clip:        padding-box;
+}
+
+// border radius for every corner
+.border-radius-corner (@topright: 0, @bottomright: 0, @bottomleft: 0, @topleft: 0) {
+	-webkit-border-top-right-radius:    @topright;
+	-webkit-border-bottom-right-radius: @bottomright;
+	-webkit-border-bottom-left-radius:  @bottomleft;
+	-webkit-border-top-left-radius:     @topleft;
+
+	-moz-border-radius-topright:        @topright;
+	-moz-border-radius-bottomright:     @bottomright;
+	-moz-border-radius-bottomleft:      @bottomleft;
+	-moz-border-radius-topleft:         @topleft;
+
+	border-top-right-radius:            @topright;
+	border-bottom-right-radius:         @bottomright;
+	border-bottom-left-radius:          @bottomleft;
+	border-top-left-radius:             @topleft;
+
+	-moz-background-clip:    padding; 
+	-webkit-background-clip: padding-box; 
+	background-clip:         padding-box; 
+}
+
+// opacity
+.opacity (@opacity: 0.5) {
+	-webkit-opacity: 	@opacity;
+	-moz-opacity: 		@opacity;
+	opacity: 			@opacity;
+}
+
+// gradient
+.gradient (@startColor: #eee, @endColor: white) {
+	background-color: @startColor;
+	background: -webkit-gradient(linear, left top, left bottom, from(@startColor), to(@endColor));
+	background: -webkit-linear-gradient(top, @startColor, @endColor);
+	background: -moz-linear-gradient(top, @startColor, @endColor);
+	background: -ms-linear-gradient(top, @startColor, @endColor);
+	background: -o-linear-gradient(top, @startColor, @endColor);
+}
+
+// horizontal gradient
+.horizontal-gradient (@startColor: #eee, @endColor: white) {
+ 	background-color: @startColor;
+	background-image: -webkit-gradient(linear, left top, right top, from(@startColor), to(@endColor));
+	background-image: -webkit-linear-gradient(left, @startColor, @endColor);
+	background-image: -moz-linear-gradient(left, @startColor, @endColor);
+	background-image: -ms-linear-gradient(left, @startColor, @endColor);
+	background-image: -o-linear-gradient(left, @startColor, @endColor);
+}
+
+
+// animation
+.animation (@name, @duration: 300ms, @delay: 0, @ease: ease) {
+	-webkit-animation: @name @duration @delay @ease;
+	-moz-animation:    @name @duration @delay @ease;
+	-ms-animation:     @name @duration @delay @ease;
+}
+
+// transform
+.transform (@string){
+	-webkit-transform: 	 @string;
+	-moz-transform: 	 @string;
+	-ms-transform: 		 @string;
+	-o-transform: 		 @string;
+	transform: 		 	 @string;
+}
+
+
+// transform-origin
+.transform-origin(@x:center, @y:center){
+	-webkit-transform-origin: @x @y;
+	-moz-transform-origin:    @x @y;
+	-ms-transform-origin:     @x @y;
+	-o-transform-origin:      @x @y;
+}
+
+// styling the placeholder
+.placeholder(@color: #313131, @fontSize: 13px, @fontStyle: normal, @lineHeight: 1.4285){
+	::-webkit-input-placeholder {
+	   color: 		@color;
+	   font-size: 	@fontSize;
+	   font-style: 	@fontStyle;
+	   line-height: @lineHeight;
+	}
+
+	:-moz-placeholder { 
+	   color: 		@color;
+	   font-size: 	@fontSize;
+	   font-style: 	@fontStyle;
+	   line-height: @lineHeight;
+	}
+
+	::-moz-placeholder {
+	   color: 		@color;
+	   font-size: 	@fontSize;
+	   font-style: 	@fontStyle;
+	   line-height: @lineHeight; 
+	}
+
+	:-ms-input-placeholder {  
+	   color: 		@color;
+	   font-size: 	@fontSize;
+	   font-style: 	@fontStyle;
+	   line-height: @lineHeight;
+	}
+}
+
+// retina support
+.retina(@prop, @value){
+	@media 	only screen and (-webkit-min-device-pixel-ratio: 	2) 		and (min-width: 700px),
+			only screen and (	min--moz-device-pixel-ratio: 	2) 		and (min-width: 700px),
+			only screen and (	-o-min-device-pixel-ratio: 		2/1) 	and (min-width: 700px),
+			only screen and (	min-device-pixel-ratio: 		2)		and (min-width: 700px),
+			only screen and (	min-resolution: 				192dpi)	and (min-width: 700px),
+			only screen and (	min-resolution: 				2dppx) 	and (min-width: 700px){
+				@prop: @value;
+			}	
+}
+
+// long text-shadowshadow
+.longTextShadow(@color, @size, @spread: 100, @flag: 1, @tmp: '') when (@size > 0) {
+  @percent: round(@flag / @size * 100) * @spread;
+  @shadowColor: fade(@color, @percent);
+  @shadow: ~"@{size}px @{size}px 1px @{shadowColor}";
+  @ends: ~"@{shadow}, @{tmp}";
+  @shadowString: ~"@{ends} 0px 0px 1px rgba(0,0,0,.2)";
+
+  .longShadowLoop(@string, @index) when (@index < 1) {
+    text-shadow: @string;
+  }
+
+  .longShadowLoop(@shadowString, @size - 1);
+  .longTextShadow(@color, @size - 1, @spread, @flag + 1, @ends);
+}
+
+// long Box-shadow
+.longBoxShadow(@color, @size, @spread: 1, @flag: 1, @tmp: '') when (@size > 0) {
+  @percent: round(@flag / @size * 100) * @spread;
+  @shadowColor: fade(@color, @percent);
+  @shadow: ~"@{size}px @{size}px 0 0 @{shadowColor}";
+  @ends: ~"@{shadow}, @{tmp}";
+  @shadowString: ~"@{ends} 0px 0px 0 0 #000";
+
+  .longShadowLoop(@string, @index) when (@index < 1) {
+    -webkit-box-shadow: @string;
+       -moz-box-shadow: @string;
+            box-shadow: @string;
+  }
+
+  .longShadowLoop(@shadowString, @size - 1);
+  .longBoxShadow(@color, @size - 1, @spread, @flag + 1, @ends);
+}
+
+// 3d text effect
+.threedee(@color, @depth) {
+  font-weight:bold; // 3D Effect works best on fat text. Take this out and make it lean if you want.
+	color:@color; /* Sets the font color to the base value. */
+	text-shadow: /* This is where the vertical stack and shadows get built, in a process described by top scientists as "magic" */
+		/* Hightlight 100% */
+		0 (@depth*0.01em) 0 lighten(@color,2.5%),
+		
+		/* Vertical Stack: 40% Shadow */
+		0 (@depth*0.02em) (@depth*0.01em) darken(@color,10%),
+		
+		/* Vertical Stack: 36% Shadow */
+		0 (@depth*0.03em) (@depth*0.02em) darken(@color,11%), /* 36% */
+		
+		/* Vertical Stack: 34% Shadow */
+		0 (@depth*0.04em) (@depth*0.02em) darken(@color,13%),
+		
+		/* Vertical Stack: 31% Shadow */
+		0 (@depth*0.06em) (@depth*0.01em) darken(@color,16%),
+		
+		/* Immediate Sharp Shadow */
+		0 (@depth*0.06em) (@depth*0.03em) rgba(0,0,0,.5),
+		
+		/* Sharp Top Shadow */
+		0 0 (@depth*0.05em) rgba(0,0,0,.2),
+		
+		/* Small Side Shadows */
+		0 (@depth*0.02em) (@depth*0.08em) rgba(0,0,0,.3),
+		
+		/* Main Bottom Shadow, Blurred */
+		0 (@depth*0.1em) (@depth*0.12em) rgba(0,0,0,.25),
+		
+		/* Large Diffused Bottom Shadow */
+		0 (@depth*0.2em) (@depth*0.20em) rgba(0,0,0,.15);
+}
