@@ -24,7 +24,7 @@ class MainController extends Controller
             'name' => 'required',
             'price' => 'required|numeric',
             'preparing_time' => 'required',
-            'photo' => 'required',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,bmp,svg|max:2048',
         ]);
 
         if ($validation->fails()) {
@@ -243,7 +243,7 @@ class MainController extends Controller
             'price' => 'required|numeric',
             'starting_at' => 'required|date_format:Y-m-d',
             'ending_at' => 'required|date_format:Y-m-d',
-            'photo' => 'required',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,bmp,svg|max:2048',
         ]);
 
         if ($validation->fails()) {

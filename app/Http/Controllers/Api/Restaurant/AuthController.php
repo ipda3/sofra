@@ -24,7 +24,7 @@ class AuthController extends Controller
             'availability' => 'required',
             'region_id' => 'required',
             'categories' => 'required|array',
-            'photo' => 'image'
+            'photo' => 'required|mimes:png,jpg',
         ]);
 
         if ($validation->fails()) {
@@ -70,7 +70,7 @@ class AuthController extends Controller
     {
         $validation = validator()->make($request->all(), [
             'password' => 'confirmed',
-            'photo' => 'image',
+            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,bmp,svg|max:2048',
         ]);
 
         if ($validation->fails()) {
