@@ -74,7 +74,7 @@ class Restaurant extends Authenticatable
         {
             $avgRating = round($sumRating/$countRating,1);
         }
-        return $avgRating;
+        return number_format($this->reviews()->avg('rate'), 0, '.', '');
     }
 
     public function scopeOrderByRating($query, $order = 'desc')

@@ -24,7 +24,7 @@ class AuthController extends Controller
             'availability' => 'required',
             'region_id' => 'required',
             'categories' => 'required|array',
-            'photo' => 'required|mimes:png,jpg',
+            'photo' => 'required|image',
         ]);
 
         if ($validation->fails()) {

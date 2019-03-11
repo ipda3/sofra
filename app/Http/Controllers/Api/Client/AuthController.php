@@ -112,6 +112,7 @@ class AuthController extends Controller
         {
             if (Hash::check($request->password, $user->password))
             {
+                // check if not activated
                 $data = [
                     'api_token' => $user->api_token,
                     'user' => $user->load('region'),
