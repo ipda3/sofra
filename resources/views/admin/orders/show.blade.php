@@ -9,7 +9,7 @@
         <div class="box-body">
 
         @include('flash::message')
-        @if(!empty($order))
+        @if(!empty($records))
                 <section class="invoice">
                     <!-- title row -->
                     <div class="row">

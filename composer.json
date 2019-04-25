@@ -14,7 +14,9 @@
         "intervention/image": "^2.3",
         "laravelcollective/html":"^5.3.0",
         "laracasts/flash": "^2.0",
-        "pusher/pusher-php-server": "^2.6"
+        "pusher/pusher-php-server": "^2.6",
+      "ext-curl": "*",
+        "ext-json": "*"
     },
     "require-dev": {
         "fzaninotto/faker": "~1.4",

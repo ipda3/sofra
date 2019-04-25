@@ -49,7 +49,7 @@ Route::group(['prefix' =>'v1'],function(){
 
         Route::post('register', 'Api\Client\AuthController@register');
         Route::post('login', 'Api\Client\AuthController@login');
-        Route::post('profile', 'Api\Client\AuthController@profile');
+//        Route::post('profile', 'Api\Client\AuthController@profile');
         Route::post('reset-password', 'Api\Client\AuthController@reset');
         Route::post('new-password', 'Api\Client\AuthController@password');
 
@@ -78,7 +78,7 @@ Route::group(['prefix' =>'v1'],function(){
 
         Route::post('register', 'Api\Restaurant\AuthController@register');
         Route::post('login', 'Api\Restaurant\AuthController@login');
-        Route::post('profile', 'Api\Restaurant\AuthController@profile');
+//        Route::post('profile', 'Api\Restaurant\AuthController@profile');
         Route::post('reset-password', 'Api\Restaurant\AuthController@reset');
         Route::post('new-password', 'Api\Restaurant\AuthController@password');
 

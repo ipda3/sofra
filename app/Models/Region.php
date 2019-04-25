@@ -10,7 +10,7 @@ class Region extends Model
     protected $table = 'regions';
     public $timestamps = true;
     protected $fillable = array('name', 'city_id');
-	protected $with = ['city'];
+    protected $with = ['city'];
 
     public function city()
     {
