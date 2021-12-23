@@ -27,9 +27,9 @@ class Order extends Model
     }
 
     public function items()
-    {
-        return $this->belongsToMany('App\Models\Item')->withPivot('price', 'quantity', 'note');
-    }
+{
+    return $this->belongsToMany('App\Models\Item')->withPivot('price', 'quantity', 'note');
+}
 
     public function restaurant()
     {

@@ -110,13 +110,13 @@ class MainController extends Controller
             {
                 $order->where('state' , '=' , 'pending');
             }
-        })->with('client','items','restaurant')->latest()->paginate(20);
+        })->with('client','items','restaurant.region','restaurant.categories')->latest()->paginate(20);
         return responseJson(1,'تم التحميل',$orders);
     }
 
     public function showOrder(Request $request)
     {
-        $order= Order::with('items','client','restaurant')->find($request->order_id);
+        $order= Order::with('items','client','restaurant.region','restaurant.categories')->find($request->order_id);
         return responseJson(1,'تم التحميل',$order);
     }
 

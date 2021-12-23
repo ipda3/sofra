@@ -10,8 +10,10 @@ use Response;
 
 class RestaurantController extends Controller
 {
+
     public function index(Request $request)
     {
+
         $restaurants = Restaurant::where(function ($q) use ($request) {
 
             if ($request->has('name')) {

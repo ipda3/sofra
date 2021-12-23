@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api\Restaurant;
 use App\Models\Restaurant;
 use App\Models\Token;
 use Hash;
+use Illuminate\Support\Facades\Storage;
 use Mail;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -14,22 +15,23 @@ class AuthController extends Controller
     public function register(Request $request)
     {
         $validation = validator()->make($request->all(), [
-            'name' => 'required',
-            'email' => 'required|unique:restaurants,email',
-            'password' => 'required|confirmed',
-            'phone' => 'required',
-            'delivery_cost' => 'required|numeric',
+            'name'            => 'required',
+            'email'           => 'required|unique:restaurants,email',
+            'password'        => 'required|confirmed',
+            'phone'           => 'required',
+            'delivery_cost'   => 'required|numeric',
             'minimum_charger' => 'required|numeric',
-            'whatsapp' => 'required',
-            'availability' => 'required',
-            'region_id' => 'required',
-            'categories' => 'required|array',
-            'photo' => 'required|image',
+            'whatsapp'        => 'required',
+            'availability'    => 'required',
+            'region_id'       => 'required',
+            'categories'      => 'required|array',
+            'photo'           => 'required|image',
+            'categories.*'    => 'required',
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
 
         $userToken = str_random(60);
@@ -50,15 +52,15 @@ class AuthController extends Controller
             $logo->move($destinationPath, $name); // uploading file to given path
             $user->update(['photo' => 'uploads/restaurants/' . $name]);
         }
-        
+
         if ($user) {
             $data = [
                 'api_token' => $userToken,
-                'data' => $user->load('region')
+                'data'      => $user->fresh()->load('region')
             ];
-            return responseJson(1,'تم التسجيل بنجاح',$data);
+            return responseJson(1, 'تم إرسال طلبك للادارة بنجاح');
         } else {
-            return responseJson(0,'حدث خطأ ، حاول مرة أخرى');
+            return responseJson(0, 'حدث خطأ ، حاول مرة أخرى');
         }
     }
 
@@ -70,12 +72,12 @@ class AuthController extends Controller
     {
         $validation = validator()->make($request->all(), [
             'password' => 'confirmed',
-            'photo' => 'required|image|mimes:jpeg,png,jpg,gif,bmp,svg|max:2048',
+            'photo'    => 'image|mimes:jpeg,png,jpg,gif,bmp,svg|max:2048',
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
         if ($request->has('name')) {
             $request->user()->update($request->only('name'));
@@ -112,6 +114,9 @@ class AuthController extends Controller
             $request->user()->update($request->only('availability'));
         }
         if ($request->hasFile('photo')) {
+            if (file_exists($request->user()->photo)) {
+                unlink($request->user()->photo);
+            }
             $path = public_path();
             $destinationPath = $path . '/uploads/restaurants/'; // upload path
             $logo = $request->file('photo');
@@ -120,11 +125,11 @@ class AuthController extends Controller
             $logo->move($destinationPath, $name); // uploading file to given path
             $request->user()->update(['photo' => 'uploads/restaurants/' . $name]);
         }
-
+        $request->user()->save();
         $data = [
-            'user' => $request->user()->load('region')
+            'restaurant' => $request->user()->load('region','categories')
         ];
-        return responseJson(1,'تم تحديث البيانات',$data);
+        return responseJson(1, 'تم تحديث البيانات', $data);
     }
 
     /**
@@ -134,29 +139,27 @@ class AuthController extends Controller
     public function login(Request $request)
     {
         $validation = validator()->make($request->all(), [
-            'email' => 'required',
+            'email'    => 'required',
             'password' => 'required'
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
 
         $user = Restaurant::where('email', $request->input('email'))->first();
-        if ($user)
-        {
-            if (Hash::check($request->password, $user->password))
-            {
+        //dd($user->toArray());
+        if ($user) {
+            if (Hash::check($request->password, $user->password)) {
 //                if (($user->total_commissions - $user->total_payments) > 400)
 //                {
 //                    return responseJson(0,'الحساب موقوف لتخطي العمولات التي لم تسدد الحد المطلوب');
 //                }
-                if (($user->total_commissions - $user->total_payments) > 400)
-                {
+                if (($user->total_commissions - $user->total_payments) > 400) {
                     $data = [
                         'api_token' => $user->api_token,
-                        'user' => $user->load('city'),
+                        'user'      => $user->load('city'),
                     ];
                     return responseJson(
                         -1,
@@ -164,20 +167,19 @@ class AuthController extends Controller
                         $data
                     );
                 }
-                if ($user->activated == 0)
-                {
-                    return responseJson(0,'الحساب موقوف .. تواصل مع الإدارة');
+                if ($user->activated == 0) {
+                    return responseJson(0, 'لم يتم تفعيل حسابك بعد');
                 }
                 $data = [
                     'api_token' => $user->api_token,
-                    'user' => $user->load('region'),
+                    'user'      => $user->load('region','categories'),
                 ];
-                return responseJson(1,'تم تسجيل الدخول',$data);
-            }else{
-                return responseJson(0,'بيانات الدخول غير صحيحة');
+                return responseJson(1, 'تم تسجيل الدخول', $data);
+            } else {
+                return responseJson(0, 'بيانات الدخول غير صحيحة');
             }
-        }else{
-            return responseJson(0,'بيانات الدخول غير صحيحة');
+        } else {
+            return responseJson(0, 'بيانات الدخول غير صحيحة');
         }
     }
 
@@ -193,28 +195,27 @@ class AuthController extends Controller
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
 
-        $user = Restaurant::where('email',$request->email)->first();
-        if ($user){
-            $code = rand(111111,999999);
+        $user = Restaurant::where('email', $request->email)->first();
+        if ($user) {
+            $code = rand(111111, 999999);
             $update = $user->update(['code' => $code]);
-            if ($update)
-            {
+            if ($update) {
                 // send email
-                Mail::send('emails.reset', ['code' => $code], function ($mail) use($user) {
+                Mail::send('emails.reset', ['code' => $code], function ($mail) use ($user) {
                     $mail->from('no-reply@ipda3.com', 'تطبيق سفرة');
 
                     $mail->to($user->email, $user->name)->subject('إعادة تعيين كلمة المرور');
                 });
 
-                return responseJson(1,'برجاء فحص بريدك الالكتروني');
-            }else{
-                return responseJson(0,'حدث خطأ ، حاول مرة أخرى');
+                return responseJson(1, 'برجاء فحص بريدك الالكتروني');
+            } else {
+                return responseJson(0, 'حدث خطأ ، حاول مرة أخرى');
             }
-        }else{
-            return responseJson(0,'لا يوجد أي حساب مرتبط بهذا البريد الالكتروني');
+        } else {
+            return responseJson(0, 'لا يوجد أي حساب مرتبط بهذا البريد الالكتروني');
         }
     }
 
@@ -225,28 +226,26 @@ class AuthController extends Controller
     public function password(Request $request)
     {
         $validation = validator()->make($request->all(), [
-            'code' => 'required',
+            'code'     => 'required',
             'password' => 'confirmed'
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
 
-        $user = Restaurant::where('code',$request->code)->where('code','!=',0)->first();
+        $user = Restaurant::where('code', $request->code)->where('code', '!=', 0)->first();
 
-        if ($user)
-        {
+        if ($user) {
             $update = $user->update(['password' => bcrypt($request->password), 'code' => null]);
-            if ($update)
-            {
-                return responseJson(1,'تم تغيير كلمة المرور بنجاح');
-            }else{
-                return responseJson(0,'حدث خطأ ، حاول مرة أخرى');
+            if ($update) {
+                return responseJson(1, 'تم تغيير كلمة المرور بنجاح');
+            } else {
+                return responseJson(0, 'حدث خطأ ، حاول مرة أخرى');
             }
-        }else{
-            return responseJson(0,'هذا الكود غير صالح');
+        } else {
+            return responseJson(0, 'هذا الكود غير صالح');
         }
     }
 
@@ -257,19 +256,19 @@ class AuthController extends Controller
     public function registerToken(Request $request)
     {
         $validation = validator()->make($request->all(), [
-            'type' => 'required|in:android,ios',
+            'type'  => 'required|in:android,ios',
             'token' => 'required',
         ]);
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
 
-        Token::where('token',$request->token)->delete();
+        Token::where('token', $request->token)->delete();
 
         $request->user()->tokens()->create($request->all());
-        return responseJson(1,'تم التسجيل بنجاح');
+        return responseJson(1, 'تم التسجيل بنجاح');
     }
 
     /**
@@ -284,10 +283,10 @@ class AuthController extends Controller
 
         if ($validation->fails()) {
             $data = $validation->errors();
-            return responseJson(0,$validation->errors()->first(),$data);
+            return responseJson(0, $validation->errors()->first(), $data);
         }
 
-        Token::where('token',$request->token)->delete();
-        return responseJson(1,'تم الحذف بنجاح بنجاح');
+        Token::where('token', $request->token)->delete();
+        return responseJson(1, 'تم الحذف بنجاح بنجاح');
     }
 }

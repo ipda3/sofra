@@ -157,38 +157,41 @@ class MainController extends Controller
             $commission = settings()->commission * $cost; // 20 SAR  // 10 // 0.1  // $total; edited to remove delivery cost from percent.
             $net = $total - settings()->commission;
             $update = $order->update([
-                                         'cost'          => $cost,
-                                         'delivery_cost' => $delivery_cost,
-                                         'total'         => $total,
-                                         'commission'    => $commission,
-                                         'net'           => $net,
-                                     ]);
+                     'cost'          => $cost,
+                     'delivery_cost' => $delivery_cost,
+                     'total'         => $total,
+                     'commission'    => $commission,
+                     'net'           => $net,
+                 ]);
             $request->user()->cart()->detach();
-            /* notification */
-            $restaurant->notifications()->create([
-                                                     'title'      => 'لديك طلب جديد',
-                                                     'title_en'   => 'You have New order',
-                                                     'content'    => 'لديك طلب جديد من العميل ' . $request->user()->name,
-                                                     'content_en' => 'You have New order by client ' . $request->user()->name,
-                                                     'order_id'   => $order->id,
+            //Notificatios
 
-                                                 ]);
-
-            $tokens = $restaurant->tokens()->where('token', '!=', '')->pluck('token')->toArray();
-            $audience = ['include_player_ids' => $tokens];
-            $contents = [
-                'en' => 'You have New order by client ' . $request->user()->name,
-                'ar' => 'لديك طلب جديد من العميل ' . $request->user()->name,
-            ];
-            $send = notifyByOneSignal($audience, $contents, [
-                'user_type' => 'restaurant',
-                'action'    => 'new-order',
-                'order_id'  => $order->id,
+            $notification = $restaurant->notifications()->create([
+                    'title' =>'لديك طلب جديد',
+                    'content' =>$request->user()->name .  'لديك طلب جديد من العميل ',
+                    'action' =>  'new-order',
+                    'order_id' => $order->id,
             ]);
-            $send = json_decode($send);
+            $tokens = $restaurant->tokens()->where('token', '!=' ,'')->pluck('token')->toArray();
+            //info("tokens result: " . json_encode($tokens));
+            if(count($tokens))
+            {
+                public_path();
+                $title = $notification->title;
+                $content = $notification->content;
+                $data =[
+                    'order_id' => $order->id,
+                    'user_type' => 'restaurant',
+                ];
+                $send = notifyByFirebase($title , $content , $tokens,$data);
+                info("firebase result: " . $send);
+
+            }
+
+
             /* notification */
             $data = [
-                'order' => $order->fresh()->load('items') // $order->fresh()  ->load (lazy eager loading) ->with('items')
+                'order' => $order->fresh()->load('items','restaurant.region','restaurant.categories','client') // $order->fresh()  ->load (lazy eager loading) ->with('items')
             ];
             return responseJson(1, 'تم الطلب بنجاح', $data);
         } else {
@@ -227,12 +230,12 @@ class MainController extends Controller
 
         $guest = Guest::create($request->only(['name', 'phone', 'address', 'city_id']));
         $order = $guest->orders()->create([
-                                              'restaurant_id'     => $request->restaurant_id,
-                                              'note'              => $request->note,
-                                              'state'             => 'pending',
-                                              'address'           => $request->address,
-                                              'payment_method_id' => $request->payment_method_id,
-                                          ]);
+              'restaurant_id'     => $request->restaurant_id,
+              'note'              => $request->note,
+              'state'             => 'pending',
+              'address'           => $request->address,
+              'payment_method_id' => $request->payment_method_id,
+          ]);
 
         $cost = 0;
         $delivery_cost = $restaurant->delivery_cost;
@@ -253,21 +256,21 @@ class MainController extends Controller
             $commission = settings()->commission * $cost;  //$total; as client requested.
             $net = $total - settings()->commission;
             $update = $order->update([
-                                         'cost'          => $cost,
-                                         'delivery_cost' => $delivery_cost,
-                                         'total'         => $total,
-                                         'commission'    => $commission,
-                                         'net'           => $net,
-                                     ]);
+                 'cost'          => $cost,
+                 'delivery_cost' => $delivery_cost,
+                 'total'         => $total,
+                 'commission'    => $commission,
+                 'net'           => $net,
+             ]);
 
             /* notification */
             $restaurant->notifications()->create([
-                                                     'title'      => 'لديك طلب جديد',
-                                                     'title_en'   => 'You have New order',
-                                                     'content'    => 'لديك طلب جديد من العميل ' . $guest->name,
-                                                     'content_en' => 'You have New order by client ' . $guest->name,
-                                                     'order_id'   => $order->id,
-                                                 ]);
+                 'title'      => 'لديك طلب جديد',
+                 'title_en'   => 'You have New order',
+                 'content'    => 'لديك طلب جديد من العميل ' . $guest->name,
+                 'content_en' => 'You have New order by client ' . $guest->name,
+                 'order_id'   => $order->id,
+             ]);
 
             $tokens = $restaurant->tokens()->where('token', '!=', '')->pluck('token')->toArray();
             $audience = ['include_player_ids' => $tokens];
@@ -301,13 +304,13 @@ class MainController extends Controller
             } elseif ($request->has('state') && $request->state == 'current') {
                 $order->where('state', '=', 'pending');
             }
-        })->with('restaurant', 'items')->latest()->paginate(20);
+        })->with('items','restaurant.region','restaurant.categories','client')->latest()->paginate(20);
         return responseJson(1, 'تم التحميل', $orders);
     }
 
     public function showOrder(Request $request)
     {
-        $order = Order::with('restaurant', 'items')->find($request->order_id);
+        $order = Order::with('items','restaurant.region','restaurant.categories','client')->find($request->order_id);
         return responseJson(1, 'تم التحميل', $order);
     }
 
@@ -326,24 +329,25 @@ class MainController extends Controller
     public function confirmOrder(Request $request)
     {
         $order = $request->user()->orders()->find($request->order_id);
+        //dd($order);
         if (!$order) {
             return responseJson(0, 'لا يمكن الحصول على البيانات');
         }
         if ($order->state != 'accepted') {
             return responseJson(0, 'لا يمكن تأكيد استلام الطلب ، لم يتم قبول الطلب');
         }
-        if ($order->delivery_confirmed_by_client == 1) {
+        /*if ($order->delivery_confirmed_by_client == 1) {
             return responseJson(1, 'تم تأكيد الاستلام');
-        }
+        }*/
         $order->update(['state' => 'delivered']);
         $restaurant = $order->restaurant;
         $restaurant->notifications()->create([
-                                                 'title'      => 'تم تأكيد توصيل طلبك من العميل',
-                                                 'title_en'   => 'Your order is delivered to client',
-                                                 'content'    => 'تم تأكيد التوصيل للطلب رقم ' . $request->order_id . ' للعميل',
-                                                 'content_en' => 'Order no. ' . $request->order_id . ' is delivered to client',
-                                                 'order_id'   => $request->order_id,
-                                             ]);
+                 'title'      => 'تم تأكيد توصيل طلبك من العميل',
+                 'title_en'   => 'Your order is delivered to client',
+                 'content'    => 'تم تأكيد التوصيل للطلب رقم ' . $request->order_id . ' للعميل',
+                 'content_en' => 'Order no. ' . $request->order_id . ' is delivered to client',
+                 'order_id'   => $request->order_id,
+             ]);
 
         $tokens = $restaurant->tokens()->where('token', '!=', '')->pluck('token')->toArray();
         $audience = ['include_player_ids' => $tokens];
@@ -376,12 +380,12 @@ class MainController extends Controller
         $order->update(['state' => 'declined']);
         $restaurant = $order->restaurant;
         $restaurant->notifications()->create([
-                                                 'title'      => 'تم رفض توصيل طلبك من العميل',
-                                                 'title_en'   => 'Your order delivery is declined by client',
-                                                 'content'    => 'تم رفض التوصيل للطلب رقم ' . $request->order_id . ' للعميل',
-                                                 'content_en' => 'Delivery if order no. ' . $request->order_id . ' is declined by client',
-                                                 'order_id'   => $request->order_id,
-                                             ]);
+             'title'      => 'تم رفض توصيل طلبك من العميل',
+             'title_en'   => 'Your order delivery is declined by client',
+             'content'    => 'تم رفض التوصيل للطلب رقم ' . $request->order_id . ' للعميل',
+             'content_en' => 'Delivery if order no. ' . $request->order_id . ' is declined by client',
+             'order_id'   => $request->order_id,
+         ]);
 
         $tokens = $restaurant->tokens()->where('token', '!=', '')->pluck('token')->toArray();
         $audience = ['include_player_ids' => $tokens];
@@ -432,14 +436,14 @@ class MainController extends Controller
         }
         $review = $restaurant->reviews()->create($request->all());
         return responseJson(1, 'تم التقييم بنجاح', [
-            'review' => $review
+            'review' => $review->load('client','restaurant')
         ]);
 
     }
 
     public function notifications(Request $request)
     {
-        $notifications = $request->user()->notifications()->latest()->paginate(20);
+        $notifications = $request->user()->notifications()->with('notifiable.region','order.client.region','order.restaurant.region')->latest()->paginate(20);
         return responseJson(1, 'تم التحميل', $notifications);
     }
 }

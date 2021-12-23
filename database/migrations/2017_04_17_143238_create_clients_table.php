@@ -15,6 +15,7 @@ class CreateClientsTable extends Migration {
 			$table->string('phone');
 			$table->integer('region_id');
 			$table->text('address');
+			$table->string('profile_image');
 			$table->string('password');
 			$table->string('api_token',60);
 			$table->string('code',6)->nullable();

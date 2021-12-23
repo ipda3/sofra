@@ -116,6 +116,7 @@ class Restaurant extends Authenticatable
         return url($this->photo);
     }
 
+
     /**
      * The attributes that should be hidden for arrays.
      *
