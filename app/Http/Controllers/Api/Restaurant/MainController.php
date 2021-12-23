@@ -336,17 +336,11 @@ class MainController extends Controller
 
     public function commissions(Request $request)
     {
-        $count = $request->user()->orders()->where('state','accepted')->where(function($q){
-            $q->where('state','delivered');
-        })->count();
+        $count = $request->user()->orders()->whereIn('state',['delivered','declined'])->count();
 
-        $total = $request->user()->orders()->where('state','accepted')->where(function($q){
-            $q->where('state','delivered');
-        })->sum('total');
+        $total = $request->user()->orders()->whereIn('state',['delivered','declined'])->sum('total');
 
-        $commissions = $request->user()->orders()->where('state','accepted')->where(function($q){
-            $q->where('state','delivered');
-        })->sum('commission');
+        $commissions = $request->user()->orders()->whereIn('state',['delivered','declined'])->sum('commission');
 
         $payments = $request->user()->transactions()->sum('amount');
 

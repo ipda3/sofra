@@ -60,7 +60,7 @@ function page($id)
  * @return mixed
  */
 function notifyByOneSignal($audience = ['included_segments' => array('All')] , $contents = ['en' => ''] , $data = []){
-    return true;
+    //return true;
     // audience include_player_ids
     $appId = ['app_id' => env('ONE_SIGNAL_APP_ID')];
 

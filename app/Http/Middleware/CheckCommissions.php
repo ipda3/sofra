@@ -15,7 +15,7 @@ class CheckCommissions
      */
     public function handle($request, Closure $next)
     {
-        if (($request->user()->total_commissions - $request->user()->total_payments) > 400)
+        if (($request->user()->total_commissions - $request->user()->total_payments) > settings()->max_credit)
         {
             return responseJson(-1,'تم ايقاف حسابك مؤقتا الى حين سداد العموله لوصولها للحد الاقصى ، يرجى مراجعة صفحة العمولة او مراجعة ادارة التطبيق شاكرين لكم استخدام تطبيق سفرة');
         }

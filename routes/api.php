@@ -18,7 +18,7 @@ Route::get('/user', function (Request $request) {
 })->middleware('auth:api');
 
 Route::group(['prefix' =>'v1'],function(){
-
+    // general
     Route::get('categories','Api\MainController@categories');
     Route::get('cities','Api\MainController@cities');
     Route::get('regions','Api\MainController@regions');
@@ -45,67 +45,67 @@ Route::group(['prefix' =>'v1'],function(){
 
     Route::post('guest/new-order','Api\Client\MainController@newOrderByGuest');
 
-    Route::group(['prefix' =>'client'],function(){
-
-        Route::post('register', 'Api\Client\AuthController@register');
-        Route::post('login', 'Api\Client\AuthController@login');
-        Route::post('profile', 'Api\Client\AuthController@profile');
-        Route::post('reset-password', 'Api\Client\AuthController@reset');
-        Route::post('new-password', 'Api\Client\AuthController@password');
+    Route::group(['prefix' =>'client','namespace' => 'Api\Client'],function(){
+        Route::post('register', 'AuthController@register');
+        Route::post('login', 'AuthController@login');
+        Route::post('profile', 'AuthController@profile');
+        Route::post('reset-password', 'AuthController@reset');
+        Route::post('new-password', 'AuthController@password');
 
         Route::group(['middleware'=>'auth:client'],function(){
-            Route::post('profile', 'Api\Client\AuthController@profile');
-            Route::post('register-token', 'Api\Client\AuthController@registerToken');
-            Route::post('remove-token', 'Api\Client\AuthController@removeToken');
-            Route::post('add-item-to-cart','Api\Client\MainController@addItemToCart');
-            Route::post('delete-item-from-cart','Api\Client\MainController@deleteItemFromCart');
-            Route::post('delete-all-cart-items','Api\Client\MainController@deleteAllCartItems');
-            Route::post('update-cart-item','Api\Client\MainController@updateCartItem');
-            Route::get('get-cart-items','Api\Client\MainController@cartItems');
-            Route::post('new-order','Api\Client\MainController@newOrder');
-            Route::get('my-orders','Api\Client\MainController@myOrders');
-            Route::get('show-order','Api\Client\MainController@showOrder');
-            Route::get('latest-order','Api\Client\MainController@latestOrder');
-            Route::post('confirm-order','Api\Client\MainController@confirmOrder');
-            Route::post('decline-order','Api\Client\MainController@declineOrder');
+            // $request->user()
+            Route::post('profile', 'AuthController@profile');
+            Route::post('register-token', 'AuthController@registerToken');
+            Route::post('remove-token', 'AuthController@removeToken');
+//            Route::post('add-item-to-cart','MainController@addItemToCart');
+//            Route::post('delete-item-from-cart','MainController@deleteItemFromCart');
+//            Route::post('delete-all-cart-items','MainController@deleteAllCartItems');
+//            Route::post('update-cart-item','MainController@updateCartItem');
+//            Route::get('get-cart-items','MainController@cartItems');
+            Route::post('new-order','MainController@newOrder');
+            Route::get('my-orders','MainController@myOrders');
+            Route::get('show-order','MainController@showOrder');
+//            Route::get('latest-order','MainController@latestOrder');
+            Route::post('confirm-order','MainController@confirmOrder');
+            Route::post('decline-order','MainController@declineOrder');
 
             Route::post('restaurant/review','Api\Client\MainController@review');
             Route::get('notifications','Api\Client\MainController@notifications');
         });
     });
 
-    Route::group(['prefix' =>'restaurant'],function(){
+    Route::group(['prefix' =>'restaurant','namespace' => 'Api\Restaurant'],function(){
 
-        Route::post('register', 'Api\Restaurant\AuthController@register');
-        Route::post('login', 'Api\Restaurant\AuthController@login');
-        Route::post('profile', 'Api\Restaurant\AuthController@profile');
-        Route::post('reset-password', 'Api\Restaurant\AuthController@reset');
-        Route::post('new-password', 'Api\Restaurant\AuthController@password');
+        Route::post('register', 'AuthController@register');
+        Route::post('login', 'AuthController@login');
+        Route::post('profile', 'AuthController@profile');
+        Route::post('reset-password', 'AuthController@reset');
+        Route::post('new-password', 'AuthController@password');
 
         Route::group(['middleware'=>'auth:restaurant'],function(){
-            Route::post('profile', 'Api\Restaurant\AuthController@profile')->middleware('check-commissions');
-            Route::post('register-token', 'Api\Restaurant\AuthController@registerToken');
-            Route::post('remove-token', 'Api\Restaurant\AuthController@removeToken');
+            Route::post('profile', 'AuthController@profile')->middleware('check-commissions');
+            Route::post('register-token', 'AuthController@registerToken');
+            Route::post('remove-token', 'AuthController@removeToken');
 
-            Route::get('my-items','Api\Restaurant\MainController@myItems');
-            Route::post('new-item','Api\Restaurant\MainController@newItem')->middleware('check-commissions');
-            Route::post('update-item','Api\Restaurant\MainController@updateItem')->middleware('check-commissions');
-            Route::post('delete-item','Api\Restaurant\MainController@deleteItem')->middleware('check-commissions');
+            Route::get('my-items','MainController@myItems');
+            Route::post('new-item','MainController@newItem')->middleware('check-commissions');
+            Route::post('update-item','MainController@updateItem')->middleware('check-commissions');
+            Route::post('delete-item','MainController@deleteItem')->middleware('check-commissions');
 
-            Route::get('my-offers','Api\Restaurant\MainController@myOffers');
-            Route::post('new-offer','Api\Restaurant\MainController@newOffer')->middleware('check-commissions');
-            Route::post('update-offer','Api\Restaurant\MainController@updateOffer')->middleware('check-commissions');
-            Route::post('delete-offer','Api\Restaurant\MainController@deleteOffer')->middleware('check-commissions');
+            Route::get('my-offers','MainController@myOffers');
+            Route::post('new-offer','MainController@newOffer')->middleware('check-commissions');
+            Route::post('update-offer','MainController@updateOffer')->middleware('check-commissions');
+            Route::post('delete-offer','MainController@deleteOffer')->middleware('check-commissions');
 
-            Route::get('my-orders','Api\Restaurant\MainController@myOrders');
-            Route::get('show-order','Api\Restaurant\MainController@showOrder');
-            Route::post('confirm-order','Api\Restaurant\MainController@confirmOrder')->middleware('check-commissions');
-            Route::post('accept-order','Api\Restaurant\MainController@acceptOrder')->middleware('check-commissions');
-            Route::post('reject-order','Api\Restaurant\MainController@rejectOrder')->middleware('check-commissions');
-            Route::get('notifications','Api\Restaurant\MainController@notifications');
-            Route::post('change-state','Api\Restaurant\MainController@changeState')->middleware('check-commissions');
+            Route::get('my-orders','MainController@myOrders');
+            Route::get('show-order','MainController@showOrder');
+            Route::post('confirm-order','MainController@confirmOrder')->middleware('check-commissions');
+            Route::post('accept-order','MainController@acceptOrder')->middleware('check-commissions');
+            Route::post('reject-order','MainController@rejectOrder')->middleware('check-commissions');
+            Route::get('notifications','MainController@notifications');
+            Route::post('change-state','MainController@changeState')->middleware('check-commissions');
             
-            Route::get('commissions','Api\Restaurant\MainController@commissions');
+            Route::get('commissions','MainController@commissions');
         });
     });
 });
